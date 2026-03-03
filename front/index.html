@@ -913,19 +913,65 @@
   }
 
   // Submit
-  function handleSubmit(e) {
-    e.preventDefault();
-    const lgpd = document.getElementById('lgpdConsent');
-    if (!lgpd.checked) {
-      alert('Por favor, aceite os termos de uso dos dados (LGPD) para continuar.');
-      return;
-    }
-    document.getElementById('progressBar').style.width = '100%';
-    document.getElementById('mainForm').style.display = 'none';
-    const success = document.getElementById('successScreen');
-    success.classList.add('visible');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+const BACKEND_URL = 'https://formulario-frontend-ujon.onrender.com';
+
+async function handleSubmit(e) {
+  e.preventDefault();
+
+  if (!document.getElementById('lgpdConsent').checked) {
+    alert('Aceite os termos LGPD para continuar.');
+    return;
   }
+
+  function checked(ids) {
+    return ids.filter(id => document.getElementById(id)?.checked)
+              .map(id => document.getElementById(id).value);
+  }
+
+  const payload = {
+    lgpdConsent:       true,
+    faixaEtaria:       document.querySelector('select')?.value || '',
+    territorio:        document.querySelectorAll('input[type=text]')[0]?.value || '',
+    genero:            document.querySelector('input[name=genero]:checked')?.value || '',
+    sexualidade:       document.querySelector('input[name=sex]:checked')?.value || '',
+    linkedin:          document.querySelector('input[type=url]')?.value || '',
+    whatsapp:          document.querySelector('input[type=tel]')?.value || '',
+    nivelEducacional:  document.querySelector('input[name=edu]:checked')?.value || '',
+    transicaoCarreira: document.querySelector('input[name=transicao]:checked')?.value || '',
+    areasAtuacao:      checked(['a1','a2','a3','a4','a5','a6','a7','a8','a9','a10','a11','a12','a13']),
+    outraArea:         document.querySelectorAll('input[type=text]')[1]?.value || '',
+    areasTech:         checked(['tech1','tech2','tech3','tech4','tech5','tech6','tech7','tech8','tech9','tech10','tech11','tech12','tech13','tech14','tech15']),
+    outraAreaTech:     document.querySelectorAll('input[type=text]')[2]?.value || '',
+    nivelAtual:        document.querySelector('input[name=nivel]:checked')?.value || '',
+    voluntario:        document.querySelector('input[name=voluntario]:checked')?.value || '',
+    areasVoluntariado: checked(['vol1','vol2','vol3','vol4','vol5','vol6','vol7','vol8']),
+    nivelVagas:        checked(['vaga1','vaga2','vaga3','vaga4','vaga5']),
+  };
+
+  const btn = document.querySelector('.submit-btn');
+  btn.textContent = 'Enviando...';
+  btn.disabled = true;
+
+  try {
+    const res  = await fetch(BACKEND_URL + '/submit', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Erro ' + res.status);
+
+    document.getElementById('progressBar').style.width = '100%';
+    document.getElementById('mainForm').style.display  = 'none';
+    document.getElementById('successScreen').classList.add('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  } catch (err) {
+    alert('Erro ao enviar: ' + err.message);
+    btn.textContent = '☕ Enviar mapeamento';
+    btn.disabled = false;
+  }
+}
 </script>
 </body>
 </html>
