@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapeamento de Comunidade — Virada no Café</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --caramel: #C47A2E;
+    --espresso: #2B1810;
+    --cream: #F5EDD8;
+    --latte: #E8D5B0;
+    --foam: #FBF6EC;
+    --green: #2D5A3D;
+    --green-light: #4A8C5C;
+    --ink: #1A1208;
+    --muted: #7A6652;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: var(--foam);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--espresso);
+    padding: 48px 32px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: var(--caramel);
+    opacity: 0.12;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; right: -40px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: var(--caramel);
+    opacity: 0.08;
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: var(--caramel);
+    color: var(--foam);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1.15;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header h1 span {
+    color: var(--caramel);
+  }
+
+  .header p {
+    font-size: 15px;
+    color: var(--latte);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: var(--latte);
+    height: 4px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--caramel), var(--green));
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  /* MAIN */
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 10px;
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeUp 0.5s forwards;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section:nth-child(1)  { animation-delay: 0.05s; }
+  .section:nth-child(2)  { animation-delay: 0.10s; }
+  .section:nth-child(3)  { animation-delay: 0.15s; }
+  .section:nth-child(4)  { animation-delay: 0.20s; }
+  .section:nth-child(5)  { animation-delay: 0.25s; }
+  .section:nth-child(6)  { animation-delay: 0.30s; }
+  .section:nth-child(7)  { animation-delay: 0.35s; }
+  .section:nth-child(8)  { animation-delay: 0.40s; }
+  .section:nth-child(9)  { animation-delay: 0.45s; }
+  .section:nth-child(10) { animation-delay: 0.50s; }
+  .section:nth-child(11) { animation-delay: 0.55s; }
+
+  .section-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    border: 1.5px solid var(--latte);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .section-card:focus-within {
+    border-color: var(--caramel);
+    box-shadow: 0 4px 24px rgba(196, 122, 46, 0.10);
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--caramel);
+    margin-bottom: 6px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--espresso);
+    margin-bottom: 20px;
+  }
+
+  /* LGPD BOX */
+  .lgpd-box {
+    background: var(--foam);
+    border: 1.5px solid var(--latte);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 20px;
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .lgpd-box strong {
+    color: var(--espresso);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  .consent-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1.5px solid var(--latte);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .consent-row:hover { border-color: var(--caramel); background: var(--foam); }
+
+  .consent-row input[type="checkbox"] {
+    width: 18px; height: 18px;
+    margin-top: 2px;
+    accent-color: var(--caramel);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .consent-row label {
+    font-size: 13.5px;
+    color: var(--espresso);
+    cursor: pointer;
+    line-height: 1.6;
+  }
+
+  /* FORM ELEMENTS */
+  .field { margin-bottom: 18px; }
+
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--espresso);
+    margin-bottom: 8px;
+    letter-spacing: 0.2px;
+  }
+
+  .field input[type="text"],
+  .field input[type="url"],
+  .field input[type="tel"],
+  .field select,
+  .field textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--latte);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--foam);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    appearance: none;
+  }
+
+  .field select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A6652' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+  }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--caramel);
+    box-shadow: 0 0 0 3px rgba(196,122,46,0.12);
+    background: #fff;
+  }
+
+  .field textarea { resize: vertical; min-height: 80px; }
+
+  /* GRID */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 560px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .section-card { padding: 22px 18px; }
+  }
+
+  /* CHIP GROUPS */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .chip-item { position: relative; }
+
+  .chip-item input[type="checkbox"],
+  .chip-item input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+  }
+
+  .chip-item label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border: 1.5px solid var(--latte);
+    border-radius: 100px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    background: var(--foam);
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .chip-item label:hover {
+    border-color: var(--caramel);
+    color: var(--espresso);
+    background: #fff;
+  }
+
+  .chip-item input:checked + label {
+    background: var(--espresso);
+    border-color: var(--espresso);
+    color: var(--cream);
+  }
+
+  /* TOGGLE (yes/no) */
+  .toggle-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .toggle-item { position: relative; }
+
+  .toggle-item input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+  .toggle-item label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border: 1.5px solid var(--latte);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--muted);
+    background: var(--foam);
+    transition: all 0.18s;
+  }
+
+  .toggle-item label:hover {
+    border-color: var(--caramel);
+    color: var(--espresso);
+  }
+
+  .toggle-item input:checked + label {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+
+  /* LEVEL CARDS */
+  .level-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .level-item { position: relative; }
+  .level-item input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+  .level-item label {
+    display: block;
+    padding: 16px;
+    border: 1.5px solid var(--latte);
+    border-radius: 12px;
+    cursor: pointer;
+    background: var(--foam);
+    transition: all 0.2s;
+  }
+
+  .level-item label:hover {
+    border-color: var(--caramel);
+    background: #fff;
+  }
+
+  .level-item input:checked + label {
+    border-color: var(--caramel);
+    background: linear-gradient(135deg, #FFF8EE, #FFF);
+    box-shadow: 0 2px 12px rgba(196,122,46,0.15);
+  }
+
+  .level-icon { font-size: 22px; margin-bottom: 6px; }
+  .level-name { font-weight: 700; font-size: 13.5px; color: var(--espresso); margin-bottom: 4px; }
+  .level-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* DIVIDER */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 32px 0 24px;
+    padding: 0 4px;
+  }
+
+  .section-divider span {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: var(--muted);
+    white-space: nowrap;
+    font-style: italic;
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--latte);
+  }
+
+  /* CLOSING CARD */
+  .closing-card {
+    background: linear-gradient(135deg, var(--espresso) 0%, #3D2010 100%);
+    border-radius: 20px;
+    padding: 40px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-top: 32px;
+  }
+
+  .closing-card::before {
+    content: '☕';
+    position: absolute;
+    font-size: 120px;
+    top: -20px;
+    right: -20px;
+    opacity: 0.07;
+  }
+
+  .closing-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--cream);
+    margin-bottom: 14px;
+  }
+
+  .closing-card p {
+    font-size: 14.5px;
+    color: var(--latte);
+    line-height: 1.75;
+    max-width: 460px;
+    margin: 0 auto 28px;
+  }
+
+  /* SUBMIT */
+  .submit-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--caramel), #A0601E);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .submit-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background 0.2s;
+  }
+
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(196,122,46,0.35); }
+  .submit-btn:active { transform: translateY(0); }
+
+  /* SUCCESS */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 32px;
+    animation: fadeUp 0.5s forwards;
+  }
+
+  .success-screen.visible { display: block; }
+
+  .success-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .success-screen h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    color: var(--espresso);
+    margin-bottom: 14px;
+  }
+
+  .success-screen p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* REQUIRED STAR */
+  .req { color: var(--caramel); margin-left: 2px; }
+
+  /* HELPER TEXT */
+  .hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 12.5px;
+    color: var(--muted);
+    border-top: 1px solid var(--latte);
+    margin-top: 20px;
+  }
+
+  .footer strong { color: var(--caramel); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-badge">☕ Virada no Café</div>
+  <h1>Mapeamento de <span>Comunidade</span></h1>
+  <p>Nos conte quem você é, o que você traz e para onde você está indo. Esse formulário nos ajuda a conectar pessoas certas e construir uma comunidade mais forte juntos.</p>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="container">
+  <form id="mainForm" onsubmit="handleSubmit(event)">
+
+    <!-- APRESENTAÇÃO E LGPD -->
+    <div class="section">
+      <div class="section-card">
+        <div class="section-label">Antes de começar</div>
+        <div class="section-title">Boas-vindas! ✨</div>
+        <div class="lgpd-box">
+          <strong>📋 Sobre o uso dos seus dados (LGPD)</strong>
+          Este formulário coleta informações pessoais e profissionais com a finalidade exclusiva de mapear o perfil da comunidade Virada no Café, facilitar conexões entre membros e direcionar oportunidades de desenvolvimento. Seus dados serão armazenados com segurança, nunca serão compartilhados com terceiros sem seu consentimento e podem ser solicitados para exclusão a qualquer momento pelo e-mail <strong>contato@viradanocafe.com.br</strong>. O tratamento segue a Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018).
+        </div>
+        <div class="consent-row">
+          <input type="checkbox" id="lgpdConsent" required>
+          <label for="lgpdConsent">Li e concordo com o uso dos meus dados conforme descrito acima. Compreendo que posso solicitar a exclusão das minhas informações a qualquer momento. <span class="req">*</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>Dados Pessoais</span></div>
+
+    <!-- DADOS PESSOAIS -->
+    <div class="section">
+      <div class="section-card">
+        <div class="section-label">Seção 1</div>
+        <div class="section-title">Quem é você?</div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label>Faixa etária <span class="req">*</span></label>
+            <select required>
+              <option value="" disabled selected>Selecione</option>
+              <option>Até 18 anos</option>
+              <option>18 – 24 anos</option>
+              <option>25 – 30 anos</option>
+              <option>31 – 35 anos</option>
+              <option>36 – 40 anos</option>
+              <option>41 – 50 anos</option>
+              <option>Acima de 50 anos</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Território / Cidade <span class="req">*</span></label>
+            <input type="text" placeholder="Ex: São Paulo – SP" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Gênero <span class="req">*</span></label>
+          <div class="chips">
+            <div class="chip-item"><input type="radio" name="genero" id="g1" value="mulher_cis"><label for="g1">Mulher cis</label></div>
+            <div class="chip-item"><input type="radio" name="genero" id="g2" value="homem_cis"><label for="g2">Homem cis</label></div>
+            <div class="chip-item"><input type="radio" name="genero" id="g3" value="mulher_trans"><label for="g3">Mulher trans</label></div>
+            <div class="chip-item"><input type="radio" name="genero" id="g4" value="homem_trans"><label for="g4">Homem trans</label></div>
+            <div class="chip-item"><input type="radio" name="genero" id="g5" value="nao_binario"><label for="g5">Não-binário</label></div>
+            <div class="chip-item"><input type="radio" name="genero" id="g6" value="prefiro_nao_dizer"><label for="g6">Prefiro não dizer</label></div>
+            <div class="chip-item"><input type="radio" name="genero" id="g7" value="outro"><label for="g7">Outro</label></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Sexualidade</label>
+          <div class="chips">
+            <div class="chip-item"><input type="radio" name="sex" id="s1" value="heterossexual"><label for="s1">Heterossexual</label></div>
+            <div class="chip-item"><input type="radio" name="sex" id="s2" value="gay_lesbica"><label for="s2">Gay / Lésbica</label></div>
+            <div class="chip-item"><input type="radio" name="sex" id="s3" value="bissexual"><label for="s3">Bissexual</label></div>
+            <div class="chip-item"><input type="radio" name="sex" id="s4" value="pansexual"><label for="s4">Pansexual</label></div>
+            <div class="chip-item"><input type="radio" name="sex" id="s5" value="assexual"><label for="s5">Assexual</label></div>
+            <div class="chip-item"><input type="radio" name="sex" id="s6" value="prefiro_nao_dizer"><label for="s6">Prefiro não dizer</label></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label>LinkedIn</label>
+            <input type="url" placeholder="linkedin.com/in/seu-perfil">
+            <p class="hint">URL completa do seu perfil</p>
+          </div>
+          <div class="field">
+            <label>WhatsApp <span class="req">*</span></label>
+            <input type="tel" placeholder="(11) 99999-9999" required>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>Educação & Carreira</span></div>
+
+    <!-- EDUCAÇÃO -->
+    <div class="section">
+      <div class="section-card">
+        <div class="section-label">Seção 2</div>
+        <div class="section-title">Formação e trajetória</div>
+
+        <div class="field">
+          <label>Nível educacional <span class="req">*</span></label>
+          <div class="chips">
+            <div class="chip-item"><input type="radio" name="edu" id="e1" value="fundamental"><label for="e1">Fundamental</label></div>
+            <div class="chip-item"><input type="radio" name="edu" id="e2" value="medio"><label for="e2">Médio completo</label></div>
+            <div class="chip-item"><input type="radio" name="edu" id="e3" value="tecnico"><label for="e3">Técnico</label></div>
+            <div class="chip-item"><input type="radio" name="edu" id="e4" value="superior_cursando"><label for="e4">Superior cursando</label></div>
+            <div class="chip-item"><input type="radio" name="edu" id="e5" value="superior_completo"><label for="e5">Superior completo</label></div>
+            <div class="chip-item"><input type="radio" name="edu" id="e6" value="pos_especializacao"><label for="e6">Pós / Especialização</label></div>
+            <div class="chip-item"><input type="radio" name="edu" id="e7" value="mestrado_doutorado"><label for="e7">Mestrado / Doutorado</label></div>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top: 24px;">
+          <label>Está fazendo transição de carreira? <span class="req">*</span></label>
+          <div class="toggle-group">
+            <div class="toggle-item">
+              <input type="radio" name="transicao" id="t1" value="sim" required>
+              <label for="t1">✅ Sim, estou em transição</label>
+            </div>
+            <div class="toggle-item">
+              <input type="radio" name="transicao" id="t2" value="nao">
+              <label for="t2">Não por enquanto</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÁREAS QUE JÁ ATUOU -->
+    <div class="section">
+      <div class="section-card">
+        <div class="section-label">Seção 3</div>
+        <div class="section-title">Áreas em que você já atuou ou atua</div>
+        <p class="hint" style="margin-bottom: 16px;">Selecione todas que se aplicam à sua trajetória.</p>
+        <div class="chips">
+          <div class="chip-item"><input type="checkbox" id="a1"><label for="a1">🛒 Comércio</label></div>
+          <div class="chip-item"><input type="checkbox" id="a2"><label for="a2">🏢 Administração</label></div>
+          <div class="chip-item"><input type="checkbox" id="a3"><label for="a3">🏥 Saúde</label></div>
+          <div class="chip-item"><input type="checkbox" id="a4"><label for="a4">💼 Autônomo / Freelancer</label></div>
+          <div class="chip-item"><input type="checkbox" id="a5"><label for="a5">🔧 Serviços Gerais</label></div>
+          <div class="chip-item"><input type="checkbox" id="a6"><label for="a6">📚 Educação</label></div>
+          <div class="chip-item"><input type="checkbox" id="a7"><label for="a7">💰 Finanças</label></div>
+          <div class="chip-item"><input type="checkbox" id="a8"><label for="a8">📣 Marketing</label></div>
+          <div class="chip-item"><input type="checkbox" id="a9"><label for="a9">⚖️ Jurídico</label></div>
+          <div class="chip-item"><input type="checkbox" id="a10"><label for="a10">🏗️ Engenharia / Construção</label></div>
+          <div class="chip-item"><input type="checkbox" id="a11"><label for="a11">🍽️ Gastronomia / Hotelaria</label></div>
+          <div class="chip-item"><input type="checkbox" id="a12"><label for="a12">🎨 Artes / Design</label></div>
+          <div class="chip-item"><input type="checkbox" id="a13"><label for="a13">Outra área</label></div>
+        </div>
+        <div class="field" style="margin-top: 16px;">
+          <label>Se marcou "Outra área", qual?</label>
+          <input type="text" placeholder="Descreva sua área de atuação">
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>Mundo Tech</span></div>
+
+    <!-- ÁREA TECH -->
+    <div class="section">
+      <div class="section-card">
+        <div class="section-label">Seção 4</div>
+        <div class="section-title">Área tech que você está estudando ou migrando</div>
+        <p class="hint" style="margin-bottom: 16px;">Pode marcar mais de uma opção.</p>
+        <div class="chips">
+          <div class="chip-item"><input type="checkbox" id="tech1"><label for="tech1">💻 Desenvolvimento Web</label></div>
+          <div class="chip-item"><input type="checkbox" id="tech2"><label for="tech2">📱 Dev Mobile (iOS/Android)</label></div>
+          <div class="chip-item"><input type="checkbox" id="tech3"><label for="tech3">🤖 Inteligência Artificial / ML</label></div>
+          <div class="chip-item"><input type="checkbox" id="tech4"><label for="tech4">📊 Dados / Analytics</label></div>
+          <div class="chip-item"><input type="checkbox" id="tech5"><label for="tech5">☁️ Cloud / Infraestrutura</label></div>
+          <div class="chip-item"><input type="checkbox" id="tech6"><label for="tech6">🔒 Cibersegurança</label></div>
+          <div class="chip-item"><input type="checkbox" id="tech7"><label for="tech7">🎮 Games / Gamedev</label></div>
+          <div class="chip-item"><input type="checkbox" id="tech8"><label for="tech8">🎨 UX / UI Design</label></div>
+          <div class="chip-item"><input type="checkbox" id="tech9"><label for="tech9">⚙️ DevOps / SRE</label></div>
+          <div class="chip-item"><input type="checkbox" id="tech10"><label for="tech10">🧪 QA / Testes</label></div>
+          <div class="chip-item"><input type="checkbox" id="tech11"><label for="tech11">📦 Gestão de Produto (Product)</label></div>
+          <div class="chip-item"><input type="checkbox" id="tech12"><label for="tech12">🤝 Agile / Scrum</label></div>
+          <div class="chip-item"><input type="checkbox" id="tech13"><label for="tech13">🔗 Blockchain / Web3</label></div>
+          <div class="chip-item"><input type="checkbox" id="tech14"><label for="tech14">📡 IoT / Sistemas Embarcados</label></div>
+          <div class="chip-item"><input type="checkbox" id="tech15"><label for="tech15">Outra área tech</label></div>
+        </div>
+        <div class="field" style="margin-top: 16px;">
+          <label>Se marcou "Outra área tech", qual?</label>
+          <input type="text" placeholder="Ex: Robótica, RPA, Low-code...">
+        </div>
+      </div>
+    </div>
+
+    <!-- NÍVEL DE PREPARAÇÃO -->
+    <div class="section">
+      <div class="section-card">
+        <div class="section-label">Seção 5</div>
+        <div class="section-title">Qual o seu nível hoje? <span class="req">*</span></div>
+        <p class="hint" style="margin-bottom: 16px;">Seja honesto(a) — isso nos ajuda a te indicar as melhores oportunidades!</p>
+        <div class="level-cards">
+          <div class="level-item">
+            <input type="radio" name="nivel" id="n1" value="explorando">
+            <label for="n1">
+              <div class="level-icon">🔭</div>
+              <div class="level-name">Explorando</div>
+              <div class="level-desc">Ainda estou conhecendo a área, pesquisando e decidindo por onde começar.</div>
+            </label>
+          </div>
+          <div class="level-item">
+            <input type="radio" name="nivel" id="n2" value="estudando">
+            <label for="n2">
+              <div class="level-icon">📖</div>
+              <div class="level-name">Estudando</div>
+              <div class="level-desc">Faço cursos ou estudo regularmente, mas ainda não tenho projetos ou experiência prática.</div>
+            </label>
+          </div>
+          <div class="level-item">
+            <input type="radio" name="nivel" id="n3" value="praticando">
+            <label for="n3">
+              <div class="level-icon">🛠️</div>
+              <div class="level-name">Praticando</div>
+              <div class="level-desc">Tenho projetos pessoais, portfólio em construção ou participei de cursos práticos.</div>
+            </label>
+          </div>
+          <div class="level-item">
+            <input type="radio" name="nivel" id="n4" value="pronto_mercado">
+            <label for="n4">
+              <div class="level-icon">🚀</div>
+              <div class="level-name">Pronto para o mercado</div>
+              <div class="level-desc">Tenho portfólio, habilidades técnicas consolidadas e estou buscando minha primeira oportunidade.</div>
+            </label>
+          </div>
+          <div class="level-item">
+            <input type="radio" name="nivel" id="n5" value="junior">
+            <label for="n5">
+              <div class="level-icon">💼</div>
+              <div class="level-name">Já atuo na área</div>
+              <div class="level-desc">Tenho experiência profissional como júnior, assistente ou estágio em tech.</div>
+            </label>
+          </div>
+          <div class="level-item">
+            <input type="radio" name="nivel" id="n6" value="pleno_senior">
+            <label for="n6">
+              <div class="level-icon">⭐</div>
+              <div class="level-name">Pleno ou Sênior</div>
+              <div class="level-desc">Tenho anos de experiência, lidero projetos e posso mentorear outras pessoas.</div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>Voluntariado & Vagas</span></div>
+
+    <!-- VOLUNTARIADO -->
+    <div class="section">
+      <div class="section-card">
+        <div class="section-label">Seção 6</div>
+        <div class="section-title">Tem interesse em ser voluntário(a) da Virada no Café?</div>
+        <div class="toggle-group">
+          <div class="toggle-item">
+            <input type="radio" name="voluntario" id="v1" value="sim" onchange="toggleVolunteerAreas(true)">
+            <label for="v1">🙋 Sim, quero contribuir!</label>
+          </div>
+          <div class="toggle-item">
+            <input type="radio" name="voluntario" id="v2" value="nao" onchange="toggleVolunteerAreas(false)">
+            <label for="v2">Não por agora</label>
+          </div>
+        </div>
+
+        <div id="volunteerAreas" style="display:none; margin-top: 20px;">
+          <div class="field">
+            <label>Quais áreas têm seu interesse para voluntariado?</label>
+            <p class="hint" style="margin-bottom: 12px;">Pode marcar mais de uma.</p>
+            <div class="chips">
+              <div class="chip-item"><input type="checkbox" id="vol1"><label for="vol1">🎓 Oficinas e Treinamentos</label></div>
+              <div class="chip-item"><input type="checkbox" id="vol2"><label for="vol2">🌐 Gestão de Comunidade</label></div>
+              <div class="chip-item"><input type="checkbox" id="vol3"><label for="vol3">📣 Marketing e Comunicação</label></div>
+              <div class="chip-item"><input type="checkbox" id="vol4"><label for="vol4">📝 Editais e Projetos</label></div>
+              <div class="chip-item"><input type="checkbox" id="vol5"><label for="vol5">👥 Gestão de Pessoas</label></div>
+              <div class="chip-item"><input type="checkbox" id="vol6"><label for="vol6">💻 Tecnologia / TI</label></div>
+              <div class="chip-item"><input type="checkbox" id="vol7"><label for="vol7">📊 Dados e Relatórios</label></div>
+              <div class="chip-item"><input type="checkbox" id="vol8"><label for="vol8">🤝 Parcerias e Captação</label></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VAGAS -->
+    <div class="section">
+      <div class="section-card">
+        <div class="section-label">Seção 7</div>
+        <div class="section-title">Gostaria de receber indicação de vagas para qual nível?</div>
+        <p class="hint" style="margin-bottom: 16px;">Pode marcar mais de uma opção se estiver aberto(a) a diferentes níveis.</p>
+        <div class="chips">
+          <div class="chip-item"><input type="checkbox" id="vaga1"><label for="vaga1">🎓 Estágio</label></div>
+          <div class="chip-item"><input type="checkbox" id="vaga2"><label for="vaga2">🌱 Auxiliar / Júnior</label></div>
+          <div class="chip-item"><input type="checkbox" id="vaga3"><label for="vaga3">📈 Assistente / Pleno</label></div>
+          <div class="chip-item"><input type="checkbox" id="vaga4"><label for="vaga4">🏆 Gestão / Sênior</label></div>
+          <div class="chip-item"><input type="checkbox" id="vaga5"><label for="vaga5">🚫 Não tenho interesse em vagas</label></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENCERRAMENTO E ENVIO -->
+    <div class="section closing-card">
+      <h2>Obrigado por fazer parte! ☕</h2>
+      <p>
+        Suas respostas são o ingrediente principal para construirmos uma comunidade mais conectada, acolhedora e cheia de oportunidades. Em breve, nossa equipe pode entrar em contato pelo WhatsApp informado para dar continuidade à sua jornada na Virada no Café.
+        <br><br>
+        Juntos, a gente vira o jogo — um café de cada vez. 🚀
+      </p>
+      <button type="submit" class="submit-btn">
+        ☕ Enviar mapeamento
+      </button>
+    </div>
+
+  </form>
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="successScreen">
+    <span class="success-icon">☕</span>
+    <h2>Formulário enviado com sucesso!</h2>
+    <p>Recebemos suas informações. Bem-vindo(a) ao mapeamento da comunidade Virada no Café! Fique de olho no seu WhatsApp — a gente pode entrar em contato em breve.</p>
+  </div>
+
+</div>
+
+<div class="footer">
+  Formulário criado por <strong>Virada no Café</strong> · Dados protegidos pela LGPD · Lei nº 13.709/2018
+</div>
+
+<script>
+  // Progress bar
+  function updateProgress() {
+    const form = document.getElementById('mainForm');
+    const inputs = form.querySelectorAll('input[required], select[required]');
+    let filled = 0;
+    inputs.forEach(inp => {
+      if (inp.type === 'checkbox' || inp.type === 'radio') {
+        if (inp.checked) filled++;
+      } else {
+        if (inp.value.trim() !== '') filled++;
+      }
+    });
+    // Count radio groups
+    const radioGroups = ['genero','transicao','edu','nivel'];
+    let groupsFilled = 0;
+    radioGroups.forEach(name => {
+      if (form.querySelector(`input[name="${name}"]:checked`)) groupsFilled++;
+    });
+    const total = (inputs.length - form.querySelectorAll('input[type="radio"][required]').length) + radioGroups.length;
+    const pct = Math.min(100, Math.round(((filled + groupsFilled) / (total + 4)) * 100));
+    document.getElementById('progressBar').style.width = pct + '%';
+  }
+
+  document.getElementById('mainForm').addEventListener('change', updateProgress);
+  document.getElementById('mainForm').addEventListener('input', updateProgress);
+
+  // Toggle volunteer areas
+  function toggleVolunteerAreas(show) {
+    document.getElementById('volunteerAreas').style.display = show ? 'block' : 'none';
+  }
+
+  // Submit
+  function handleSubmit(e) {
+    e.preventDefault();
+    const lgpd = document.getElementById('lgpdConsent');
+    if (!lgpd.checked) {
+      alert('Por favor, aceite os termos de uso dos dados (LGPD) para continuar.');
+      return;
+    }
+    document.getElementById('progressBar').style.width = '100%';
+    document.getElementById('mainForm').style.display = 'none';
+    const success = document.getElementById('successScreen');
+    success.classList.add('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
