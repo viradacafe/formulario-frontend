@@ -27,6 +27,7 @@ function buildRow(data) {
     data.territorio        || '',
     data.genero            || '',
     data.sexualidade       || '',
+    data.raca              || '',
     data.linkedin          || '',
     data.whatsapp          || '',
     data.nivelEducacional  || '',
