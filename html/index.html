@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapeamento de Comunidade — Virada no Cafe</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--caramel:#C47A2E;--espresso:#2B1810;--cream:#F5EDD8;--latte:#E8D5B0;--foam:#FBF6EC;--green:#2D5A3D;--ink:#1A1208;--muted:#7A6652}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--foam);color:var(--ink);min-height:100vh}
+.header{background:var(--espresso);padding:48px 32px 40px;text-align:center;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-60px;left:-60px;width:220px;height:220px;border-radius:50%;background:var(--caramel);opacity:.12}
+.header::after{content:'';position:absolute;bottom:-80px;right:-40px;width:280px;height:280px;border-radius:50%;background:var(--caramel);opacity:.08}
+.badge{display:inline-block;background:var(--caramel);color:var(--foam);font-size:11px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;padding:6px 18px;border-radius:20px;margin-bottom:20px}
+h1{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,48px);font-weight:900;color:var(--cream);line-height:1.15;margin-bottom:16px;position:relative;z-index:1}
+h1 span{color:var(--caramel)}
+.header p{font-size:15px;color:var(--latte);max-width:560px;margin:0 auto;line-height:1.7;position:relative;z-index:1}
+.prog-wrap{background:var(--latte);height:4px;position:sticky;top:0;z-index:100}
+.prog{height:100%;background:linear-gradient(90deg,var(--caramel),var(--green));width:0%;transition:width .4s ease}
+.container{max-width:720px;margin:0 auto;padding:40px 24px 80px}
+.sec{margin-bottom:10px;opacity:0;transform:translateY(24px);animation:up .5s forwards}
+@keyframes up{to{opacity:1;transform:translateY(0)}}
+.sec:nth-child(1){animation-delay:.05s}.sec:nth-child(2){animation-delay:.10s}.sec:nth-child(3){animation-delay:.15s}.sec:nth-child(4){animation-delay:.20s}.sec:nth-child(5){animation-delay:.25s}.sec:nth-child(6){animation-delay:.30s}.sec:nth-child(7){animation-delay:.35s}.sec:nth-child(8){animation-delay:.40s}.sec:nth-child(9){animation-delay:.45s}.sec:nth-child(10){animation-delay:.50s}.sec:nth-child(11){animation-delay:.55s}.sec:nth-child(12){animation-delay:.60s}.sec:nth-child(13){animation-delay:.65s}
+.card{background:#fff;border-radius:16px;padding:32px;border:1.5px solid var(--latte);transition:border-color .2s,box-shadow .2s}
+.card:focus-within{border-color:var(--caramel);box-shadow:0 4px 24px rgba(196,122,46,.10)}
+.slabel{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--caramel);margin-bottom:6px}
+.stitle{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--espresso);margin-bottom:20px}
+.lgpd-box{background:var(--foam);border:1.5px solid var(--latte);border-radius:12px;padding:20px 22px;margin-bottom:20px;font-size:13.5px;color:var(--muted);line-height:1.7}
+.lgpd-box strong{color:var(--espresso);display:block;margin-bottom:6px;font-size:14px}
+.consent{display:flex;align-items:flex-start;gap:12px;margin-top:16px;padding:14px 16px;border-radius:10px;border:1.5px solid var(--latte);cursor:pointer;transition:border-color .2s,background .2s}
+.consent:hover{border-color:var(--caramel);background:var(--foam)}
+.consent input[type=checkbox]{width:18px;height:18px;margin-top:2px;accent-color:var(--caramel);flex-shrink:0;cursor:pointer}
+.consent label{font-size:13.5px;color:var(--espresso);cursor:pointer;line-height:1.6}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--espresso);margin-bottom:8px}
+.field input[type=text],.field input[type=url],.field input[type=tel],.field select{width:100%;padding:12px 16px;border:1.5px solid var(--latte);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);background:var(--foam);transition:border-color .2s,box-shadow .2s;outline:none;appearance:none}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A6652' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px}
+.field input:focus,.field select:focus{border-color:var(--caramel);box-shadow:0 0 0 3px rgba(196,122,46,.12);background:#fff}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:560px){.g2{grid-template-columns:1fr}.card{padding:22px 18px}}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.ci{position:relative}
+.ci input{position:absolute;opacity:0;width:0;height:0}
+.ci label{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border:1.5px solid var(--latte);border-radius:100px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .18s;background:var(--foam);white-space:nowrap;user-select:none}
+.ci label:hover{border-color:var(--caramel);color:var(--espresso);background:#fff}
+.ci input:checked+label{background:var(--espresso);border-color:var(--espresso);color:var(--cream)}
+.tg{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap}
+.ti{position:relative}
+.ti input{position:absolute;opacity:0;width:0;height:0}
+.ti label{display:flex;align-items:center;gap:8px;padding:10px 24px;border:1.5px solid var(--latte);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;color:var(--muted);background:var(--foam);transition:all .18s}
+.ti label:hover{border-color:var(--caramel);color:var(--espresso)}
+.ti input:checked+label{background:var(--green);border-color:var(--green);color:#fff}
+.lcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:4px}
+.li{position:relative}
+.li input{position:absolute;opacity:0;width:0;height:0}
+.li label{display:block;padding:16px;border:1.5px solid var(--latte);border-radius:12px;cursor:pointer;background:var(--foam);transition:all .2s}
+.li label:hover{border-color:var(--caramel);background:#fff}
+.li input:checked+label{border-color:var(--caramel);background:linear-gradient(135deg,#FFF8EE,#FFF);box-shadow:0 2px 12px rgba(196,122,46,.15)}
+.licon{font-size:22px;margin-bottom:6px}
+.lname{font-weight:700;font-size:13.5px;color:var(--espresso);margin-bottom:4px}
+.ldesc{font-size:12px;color:var(--muted);line-height:1.5}
+.divider{display:flex;align-items:center;gap:14px;margin:32px 0 24px;padding:0 4px}
+.divider span{font-family:'Playfair Display',serif;font-size:13px;color:var(--muted);white-space:nowrap;font-style:italic}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--latte)}
+.closing{background:linear-gradient(135deg,var(--espresso) 0%,#3D2010 100%);border-radius:20px;padding:40px 36px;text-align:center;position:relative;overflow:hidden;margin-top:32px}
+.closing::before{content:'☕';position:absolute;font-size:120px;top:-20px;right:-20px;opacity:.07}
+.closing h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--cream);margin-bottom:14px}
+.closing p{font-size:14.5px;color:var(--latte);line-height:1.75;max-width:460px;margin:0 auto 28px}
+.sbtn{width:100%;padding:18px;background:linear-gradient(135deg,var(--caramel),#A0601E);color:#fff;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px}
+.sbtn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(196,122,46,.35)}
+.sbtn:disabled{opacity:.7;cursor:not-allowed}
+.success{display:none;text-align:center;padding:60px 32px}
+.success.on{display:block;animation:up .5s forwards}
+.sicon{font-size:64px;margin-bottom:20px;display:block}
+.success h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--espresso);margin-bottom:14px}
+.success p{color:var(--muted);font-size:15px;line-height:1.7;max-width:420px;margin:0 auto}
+.req{color:var(--caramel);margin-left:2px}
+.hint{font-size:12px;color:var(--muted);margin-top:6px}
+.info-note{background:linear-gradient(135deg,#EEF6F1,#F5FAF7);border:1.5px solid #B5D9C4;border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:#2D5A3D;line-height:1.65}
+.info-note strong{display:block;margin-bottom:4px;font-size:13.5px}
+.footer{text-align:center;padding:32px 24px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--latte);margin-top:20px}
+.footer strong{color:var(--caramel)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#C0392B;color:#fff;padding:14px 24px;border-radius:10px;font-size:14px;font-weight:500;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="badge">☕ Virada no Cafe</div>
+  <h1>Mapeamento de <span>Comunidade</span></h1>
+  <p>Nos conte quem voce e, o que voce traz e para onde voce esta indo. Esse formulario nos ajuda a conectar pessoas certas e construir uma comunidade mais forte juntos.</p>
+</header>
+
+<div class="prog-wrap"><div class="prog" id="prog"></div></div>
+
+<div class="container">
+<form id="form" onsubmit="send(event)">
+
+  <!-- LGPD -->
+  <div class="sec">
+    <div class="card">
+      <div class="slabel">Antes de comecar</div>
+      <div class="stitle">Boas-vindas! ✨</div>
+      <div class="lgpd-box">
+        <strong>📋 Sobre o uso dos seus dados (LGPD)</strong>
+        Este formulario coleta informacoes pessoais e profissionais com finalidade exclusiva de mapear o perfil da comunidade Virada no Cafe, facilitar conexoes entre membros e direcionar oportunidades de desenvolvimento. Dados sensiveis como raca, genero, sexualidade e deficiencia sao coletados apenas para fins de diversidade e inclusao, nunca para discriminacao. Seus dados serao armazenados com seguranca, nunca compartilhados com terceiros sem consentimento e podem ser solicitados para exclusao a qualquer momento pelo e-mail contato@viradanocafe.com.br. Tratamento conforme a LGPD — Lei nr 13.709/2018.
+      </div>
+      <div class="consent">
+        <input type="checkbox" id="lgpd" required>
+        <label for="lgpd">Li e concordo com o uso dos meus dados conforme descrito acima, incluindo dados sensiveis para fins de diversidade e inclusao. <span class="req">*</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><span>Dados Pessoais</span></div>
+
+  <!-- DADOS PESSOAIS -->
+  <div class="sec">
+    <div class="card">
+      <div class="slabel">Secao 1</div>
+      <div class="stitle">Quem e voce?</div>
+      <div class="g2">
+        <div class="field">
+          <label>Faixa etaria <span class="req">*</span></label>
+          <select id="faixa" required>
+            <option value="" disabled selected>Selecione</option>
+            <option>Ate 18 anos</option>
+            <option>18 - 24 anos</option>
+            <option>25 - 30 anos</option>
+            <option>31 - 35 anos</option>
+            <option>36 - 40 anos</option>
+            <option>41 - 50 anos</option>
+            <option>Acima de 50 anos</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Territorio / Cidade <span class="req">*</span></label>
+          <input type="text" id="territorio" placeholder="Ex: Sao Paulo - SP" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Genero <span class="req">*</span></label>
+        <div class="chips">
+          <div class="ci"><input type="radio" name="genero" id="g1" value="Mulher cis"><label for="g1">Mulher cis</label></div>
+          <div class="ci"><input type="radio" name="genero" id="g2" value="Homem cis"><label for="g2">Homem cis</label></div>
+          <div class="ci"><input type="radio" name="genero" id="g3" value="Mulher trans"><label for="g3">Mulher trans</label></div>
+          <div class="ci"><input type="radio" name="genero" id="g4" value="Homem trans"><label for="g4">Homem trans</label></div>
+          <div class="ci"><input type="radio" name="genero" id="g5" value="Nao-binario"><label for="g5">Nao-binario</label></div>
+          <div class="ci"><input type="radio" name="genero" id="g6" value="Prefiro nao dizer"><label for="g6">Prefiro nao dizer</label></div>
+          <div class="ci"><input type="radio" name="genero" id="g7" value="Outro"><label for="g7">Outro</label></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Sexualidade</label>
+        <div class="chips">
+          <div class="ci"><input type="radio" name="sex" id="s1" value="Heterossexual"><label for="s1">Heterossexual</label></div>
+          <div class="ci"><input type="radio" name="sex" id="s2" value="Gay / Lesbica"><label for="s2">Gay / Lesbica</label></div>
+          <div class="ci"><input type="radio" name="sex" id="s3" value="Bissexual"><label for="s3">Bissexual</label></div>
+          <div class="ci"><input type="radio" name="sex" id="s4" value="Pansexual"><label for="s4">Pansexual</label></div>
+          <div class="ci"><input type="radio" name="sex" id="s5" value="Assexual"><label for="s5">Assexual</label></div>
+          <div class="ci"><input type="radio" name="sex" id="s6" value="Prefiro nao dizer"><label for="s6">Prefiro nao dizer</label></div>
+        </div>
+      </div>
+
+      <!-- RACA -->
+      <div class="field">
+        <label>Raca / Etnia <span class="req">*</span></label>
+        <div class="info-note">
+          <strong>🌍 Por que perguntamos?</strong>
+          Essa informacao nos ajuda a entender e promover diversidade racial na comunidade, garantindo que todos os grupos sejam representados e apoiados igualmente.
+        </div>
+        <div class="chips">
+          <div class="ci"><input type="radio" name="raca" id="r1" value="Preta"><label for="r1">Preta</label></div>
+          <div class="ci"><input type="radio" name="raca" id="r2" value="Parda"><label for="r2">Parda</label></div>
+          <div class="ci"><input type="radio" name="raca" id="r3" value="Branca"><label for="r3">Branca</label></div>
+          <div class="ci"><input type="radio" name="raca" id="r4" value="Amarela"><label for="r4">Amarela</label></div>
+          <div class="ci"><input type="radio" name="raca" id="r5" value="Indigena"><label for="r5">Indigena</label></div>
+          <div class="ci"><input type="radio" name="raca" id="r6" value="Prefiro nao dizer"><label for="r6">Prefiro nao dizer</label></div>
+        </div>
+      </div>
+
+      <!-- DEFICIENCIA -->
+      <div class="field">
+        <label>Voce e Pessoa com Deficiencia (PcD)?</label>
+        <div class="info-note">
+          <strong>♿ Por que perguntamos?</strong>
+          Queremos garantir acessibilidade, inclusao e suporte adequado para todos os membros da comunidade.
+        </div>
+        <div class="tg">
+          <div class="ti"><input type="radio" name="pcd" id="pcd1" value="Nao" onchange="togglePCD(false)"><label for="pcd1">Nao</label></div>
+          <div class="ti"><input type="radio" name="pcd" id="pcd2" value="Sim" onchange="togglePCD(true)"><label for="pcd2">Sim</label></div>
+          <div class="ti"><input type="radio" name="pcd" id="pcd3" value="Prefiro nao dizer" onchange="togglePCD(false)"><label for="pcd3">Prefiro nao dizer</label></div>
+        </div>
+        <div id="pcdTipo" style="display:none;margin-top:16px">
+          <label style="display:block;font-size:13px;font-weight:600;color:var(--espresso);margin-bottom:8px">Qual tipo de deficiencia? <span style="font-weight:400;color:var(--muted)">(pode marcar mais de uma)</span></label>
+          <div class="chips">
+            <div class="ci"><input type="checkbox" id="def1" value="Fisica"><label for="def1">♿ Fisica</label></div>
+            <div class="ci"><input type="checkbox" id="def2" value="Visual"><label for="def2">👁️ Visual</label></div>
+            <div class="ci"><input type="checkbox" id="def3" value="Auditiva"><label for="def3">👂 Auditiva</label></div>
+            <div class="ci"><input type="checkbox" id="def4" value="Intelectual"><label for="def4">🧠 Intelectual</label></div>
+            <div class="ci"><input type="checkbox" id="def5" value="Psicossocial / Mental"><label for="def5">💚 Psicossocial / Mental</label></div>
+            <div class="ci"><input type="checkbox" id="def6" value="TEA (Autismo)"><label for="def6">🧩 TEA (Autismo)</label></div>
+            <div class="ci"><input type="checkbox" id="def7" value="Multipla"><label for="def7">Multipla</label></div>
+            <div class="ci"><input type="checkbox" id="def8" value="Outra"><label for="def8">Outra</label></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="g2">
+        <div class="field">
+          <label>LinkedIn</label>
+          <input type="url" id="linkedin" placeholder="linkedin.com/in/seu-perfil">
+          <p class="hint">URL completa do seu perfil</p>
+        </div>
+        <div class="field">
+          <label>WhatsApp <span class="req">*</span></label>
+          <input type="tel" id="whats" placeholder="(11) 99999-9999" required>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><span>Educacao e Carreira</span></div>
+
+  <!-- EDUCACAO -->
+  <div class="sec">
+    <div class="card">
+      <div class="slabel">Secao 2</div>
+      <div class="stitle">Formacao e trajetoria</div>
+      <div class="field">
+        <label>Nivel educacional <span class="req">*</span></label>
+        <div class="chips">
+          <div class="ci"><input type="radio" name="edu" id="e1" value="Fundamental"><label for="e1">Fundamental</label></div>
+          <div class="ci"><input type="radio" name="edu" id="e2" value="Medio completo"><label for="e2">Medio completo</label></div>
+          <div class="ci"><input type="radio" name="edu" id="e3" value="Tecnico"><label for="e3">Tecnico</label></div>
+          <div class="ci"><input type="radio" name="edu" id="e4" value="Superior cursando"><label for="e4">Superior cursando</label></div>
+          <div class="ci"><input type="radio" name="edu" id="e5" value="Superior completo"><label for="e5">Superior completo</label></div>
+          <div class="ci"><input type="radio" name="edu" id="e6" value="Pos / Especializacao"><label for="e6">Pos / Especializacao</label></div>
+          <div class="ci"><input type="radio" name="edu" id="e7" value="Mestrado / Doutorado"><label for="e7">Mestrado / Doutorado</label></div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:24px">
+        <label>Esta fazendo transicao de carreira? <span class="req">*</span></label>
+        <div class="tg">
+          <div class="ti"><input type="radio" name="trans" id="tr1" value="Sim"><label for="tr1">Sim, estou em transicao</label></div>
+          <div class="ti"><input type="radio" name="trans" id="tr2" value="Nao"><label for="tr2">Nao por enquanto</label></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AREAS ATUACAO -->
+  <div class="sec">
+    <div class="card">
+      <div class="slabel">Secao 3</div>
+      <div class="stitle">Areas em que voce ja atuou ou atua</div>
+      <p class="hint" style="margin-bottom:16px">Selecione todas que se aplicam a sua trajetoria.</p>
+      <div class="chips">
+        <div class="ci"><input type="checkbox" id="a1" value="Comercio"><label for="a1">Comercio</label></div>
+        <div class="ci"><input type="checkbox" id="a2" value="Administracao"><label for="a2">Administracao</label></div>
+        <div class="ci"><input type="checkbox" id="a3" value="Saude"><label for="a3">Saude</label></div>
+        <div class="ci"><input type="checkbox" id="a4" value="Autonomo / Freelancer"><label for="a4">Autonomo / Freelancer</label></div>
+        <div class="ci"><input type="checkbox" id="a5" value="Servicos Gerais"><label for="a5">Servicos Gerais</label></div>
+        <div class="ci"><input type="checkbox" id="a6" value="Educacao"><label for="a6">Educacao</label></div>
+        <div class="ci"><input type="checkbox" id="a7" value="Financas"><label for="a7">Financas</label></div>
+        <div class="ci"><input type="checkbox" id="a8" value="Marketing"><label for="a8">Marketing</label></div>
+        <div class="ci"><input type="checkbox" id="a9" value="Juridico"><label for="a9">Juridico</label></div>
+        <div class="ci"><input type="checkbox" id="a10" value="Engenharia / Construcao"><label for="a10">Engenharia / Construcao</label></div>
+        <div class="ci"><input type="checkbox" id="a11" value="Gastronomia / Hotelaria"><label for="a11">Gastronomia / Hotelaria</label></div>
+        <div class="ci"><input type="checkbox" id="a12" value="Artes / Design"><label for="a12">Artes / Design</label></div>
+        <div class="ci"><input type="checkbox" id="a13" value="Outra"><label for="a13">Outra area</label></div>
+      </div>
+      <div class="field" style="margin-top:16px">
+        <label>Se marcou "Outra area", qual?</label>
+        <input type="text" id="outraArea" placeholder="Descreva sua area de atuacao">
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><span>Mundo Tech</span></div>
+
+  <!-- AREA TECH -->
+  <div class="sec">
+    <div class="card">
+      <div class="slabel">Secao 4</div>
+      <div class="stitle">Area tech que voce esta estudando ou migrando</div>
+      <p class="hint" style="margin-bottom:16px">Pode marcar mais de uma opcao.</p>
+      <div class="chips">
+        <div class="ci"><input type="checkbox" id="tc1" value="Desenvolvimento Web"><label for="tc1">Desenvolvimento Web</label></div>
+        <div class="ci"><input type="checkbox" id="tc2" value="Dev Mobile"><label for="tc2">Dev Mobile</label></div>
+        <div class="ci"><input type="checkbox" id="tc3" value="IA / Machine Learning"><label for="tc3">IA / Machine Learning</label></div>
+        <div class="ci"><input type="checkbox" id="tc4" value="Dados / Analytics"><label for="tc4">Dados / Analytics</label></div>
+        <div class="ci"><input type="checkbox" id="tc5" value="Cloud / Infraestrutura"><label for="tc5">Cloud / Infraestrutura</label></div>
+        <div class="ci"><input type="checkbox" id="tc6" value="Ciberseguranca"><label for="tc6">Ciberseguranca</label></div>
+        <div class="ci"><input type="checkbox" id="tc7" value="Games / Gamedev"><label for="tc7">Games / Gamedev</label></div>
+        <div class="ci"><input type="checkbox" id="tc8" value="UX / UI Design"><label for="tc8">UX / UI Design</label></div>
+        <div class="ci"><input type="checkbox" id="tc9" value="DevOps / SRE"><label for="tc9">DevOps / SRE</label></div>
+        <div class="ci"><input type="checkbox" id="tc10" value="QA / Testes"><label for="tc10">QA / Testes</label></div>
+        <div class="ci"><input type="checkbox" id="tc11" value="Gestao de Produto"><label for="tc11">Gestao de Produto</label></div>
+        <div class="ci"><input type="checkbox" id="tc12" value="Agile / Scrum"><label for="tc12">Agile / Scrum</label></div>
+        <div class="ci"><input type="checkbox" id="tc13" value="Blockchain / Web3"><label for="tc13">Blockchain / Web3</label></div>
+        <div class="ci"><input type="checkbox" id="tc14" value="IoT / Sistemas Embarcados"><label for="tc14">IoT / Sistemas Embarcados</label></div>
+        <div class="ci"><input type="checkbox" id="tc15" value="Outra area tech"><label for="tc15">Outra area tech</label></div>
+      </div>
+      <div class="field" style="margin-top:16px">
+        <label>Se marcou "Outra area tech", qual?</label>
+        <input type="text" id="outraTech" placeholder="Ex: Robotica, RPA, Low-code...">
+      </div>
+    </div>
+  </div>
+
+  <!-- NIVEL -->
+  <div class="sec">
+    <div class="card">
+      <div class="slabel">Secao 5</div>
+      <div class="stitle">Qual o seu nivel hoje? <span class="req">*</span></div>
+      <p class="hint" style="margin-bottom:16px">Seja honesto(a) - isso nos ajuda a te indicar as melhores oportunidades!</p>
+      <div class="lcards">
+        <div class="li"><input type="radio" name="nivel" id="n1" value="Explorando"><label for="n1"><div class="licon">🔭</div><div class="lname">Explorando</div><div class="ldesc">Ainda estou conhecendo a area, pesquisando e decidindo por onde comecar.</div></label></div>
+        <div class="li"><input type="radio" name="nivel" id="n2" value="Estudando"><label for="n2"><div class="licon">📖</div><div class="lname">Estudando</div><div class="ldesc">Faco cursos regularmente, mas ainda nao tenho experiencia pratica.</div></label></div>
+        <div class="li"><input type="radio" name="nivel" id="n3" value="Praticando"><label for="n3"><div class="licon">🛠️</div><div class="lname">Praticando</div><div class="ldesc">Tenho projetos pessoais, portfolio em construcao ou cursos praticos.</div></label></div>
+        <div class="li"><input type="radio" name="nivel" id="n4" value="Pronto para o mercado"><label for="n4"><div class="licon">🚀</div><div class="lname">Pronto para o mercado</div><div class="ldesc">Tenho portfolio e habilidades consolidadas, buscando minha primeira oportunidade.</div></label></div>
+        <div class="li"><input type="radio" name="nivel" id="n5" value="Junior / Estagio"><label for="n5"><div class="licon">💼</div><div class="lname">Ja atuo na area</div><div class="ldesc">Tenho experiencia como junior, assistente ou estagio em tech.</div></label></div>
+        <div class="li"><input type="radio" name="nivel" id="n6" value="Pleno / Senior"><label for="n6"><div class="licon">⭐</div><div class="lname">Pleno ou Senior</div><div class="ldesc">Tenho anos de experiencia, lidero projetos e posso mentorar outras pessoas.</div></label></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><span>Voluntariado e Vagas</span></div>
+
+  <!-- VOLUNTARIADO -->
+  <div class="sec">
+    <div class="card">
+      <div class="slabel">Secao 6</div>
+      <div class="stitle">Tem interesse em ser voluntario(a) da Virada no Cafe?</div>
+      <div class="tg">
+        <div class="ti"><input type="radio" name="vol" id="v1" value="Sim" onchange="document.getElementById('vareas').style.display='block'"><label for="v1">Sim, quero contribuir!</label></div>
+        <div class="ti"><input type="radio" name="vol" id="v2" value="Nao" onchange="document.getElementById('vareas').style.display='none'"><label for="v2">Nao por agora</label></div>
+      </div>
+      <div id="vareas" style="display:none;margin-top:20px">
+        <div class="field">
+          <label>Quais areas tem seu interesse para voluntariado?</label>
+          <p class="hint" style="margin-bottom:12px">Pode marcar mais de uma.</p>
+          <div class="chips">
+            <div class="ci"><input type="checkbox" id="vl1" value="Oficinas e Treinamentos"><label for="vl1">Oficinas e Treinamentos</label></div>
+            <div class="ci"><input type="checkbox" id="vl2" value="Gestao de Comunidade"><label for="vl2">Gestao de Comunidade</label></div>
+            <div class="ci"><input type="checkbox" id="vl3" value="Marketing e Comunicacao"><label for="vl3">Marketing e Comunicacao</label></div>
+            <div class="ci"><input type="checkbox" id="vl4" value="Editais e Projetos"><label for="vl4">Editais e Projetos</label></div>
+            <div class="ci"><input type="checkbox" id="vl5" value="Gestao de Pessoas"><label for="vl5">Gestao de Pessoas</label></div>
+            <div class="ci"><input type="checkbox" id="vl6" value="Tecnologia / TI"><label for="vl6">Tecnologia / TI</label></div>
+            <div class="ci"><input type="checkbox" id="vl7" value="Dados e Relatorios"><label for="vl7">Dados e Relatorios</label></div>
+            <div class="ci"><input type="checkbox" id="vl8" value="Parcerias e Captacao"><label for="vl8">Parcerias e Captacao</label></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VAGAS -->
+  <div class="sec">
+    <div class="card">
+      <div class="slabel">Secao 7</div>
+      <div class="stitle">Gostaria de receber indicacao de vagas para qual nivel?</div>
+      <p class="hint" style="margin-bottom:16px">Pode marcar mais de uma opcao.</p>
+      <div class="chips">
+        <div class="ci"><input type="checkbox" id="vg1" value="Estagio"><label for="vg1">Estagio</label></div>
+        <div class="ci"><input type="checkbox" id="vg2" value="Auxiliar / Junior"><label for="vg2">Auxiliar / Junior</label></div>
+        <div class="ci"><input type="checkbox" id="vg3" value="Assistente / Pleno"><label for="vg3">Assistente / Pleno</label></div>
+        <div class="ci"><input type="checkbox" id="vg4" value="Gestao / Senior"><label for="vg4">Gestao / Senior</label></div>
+        <div class="ci"><input type="checkbox" id="vg5" value="Sem interesse em vagas"><label for="vg5">Nao tenho interesse em vagas</label></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENCERRAMENTO -->
+  <div class="sec closing">
+    <h2>Obrigado por fazer parte! ☕</h2>
+    <p>Suas respostas sao o ingrediente principal para construirmos uma comunidade mais conectada, acolhedora e cheia de oportunidades. Em breve, nossa equipe pode entrar em contato pelo WhatsApp informado para dar continuidade a sua jornada na Virada no Cafe.<br><br>Juntos, a gente vira o jogo - um cafe de cada vez. 🚀</p>
+    <button type="submit" class="sbtn" id="sbtn">☕ Enviar mapeamento</button>
+  </div>
+
+</form>
+
+<div class="success" id="ok">
+  <span class="sicon">☕</span>
+  <h2>Formulario enviado com sucesso!</h2>
+  <p>Recebemos suas informacoes. Bem-vindo(a) ao mapeamento da comunidade Virada no Cafe! Fique de olho no seu WhatsApp - a gente pode entrar em contato em breve.</p>
+</div>
+
+</div>
+
+<div class="footer">Formulario criado por <strong>Virada no Cafe</strong> · Dados protegidos pela LGPD · Lei nr 13.709/2018</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const BACKEND = 'https://formulario-frontend-ujon.onrender.com';
+
+function prog() {
+  let f=0, total=6;
+  if(document.getElementById('lgpd').checked) f++;
+  if(document.getElementById('faixa').value) f++;
+  if(document.getElementById('territorio').value.trim()) f++;
+  if(document.getElementById('whats').value.trim()) f++;
+  if(document.querySelector('input[name="nivel"]:checked')) f++;
+  if(document.querySelector('input[name="raca"]:checked')) f++;
+  document.getElementById('prog').style.width=Math.round(f/total*100)+'%';
+}
+document.getElementById('form').addEventListener('change',prog);
+document.getElementById('form').addEventListener('input',prog);
+
+function togglePCD(show) {
+  document.getElementById('pcdTipo').style.display = show ? 'block' : 'none';
+  if(!show) ['def1','def2','def3','def4','def5','def6','def7','def8'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.checked=false;
+  });
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'),5000);
+}
+
+function checked(ids){
+  return ids.filter(id=>document.getElementById(id)&&document.getElementById(id).checked)
+            .map(id=>document.getElementById(id).value);
+}
+
+async function send(e) {
+  e.preventDefault();
+  if(!document.getElementById('lgpd').checked){toast('Aceite os termos LGPD para continuar.');return;}
+
+  const payload={
+    lgpdConsent:       true,
+    faixaEtaria:       document.getElementById('faixa').value,
+    territorio:        document.getElementById('territorio').value,
+    genero:            (document.querySelector('input[name=genero]:checked')||{}).value||'',
+    sexualidade:       (document.querySelector('input[name=sex]:checked')||{}).value||'',
+    raca:              (document.querySelector('input[name=raca]:checked')||{}).value||'',
+    pcd:               (document.querySelector('input[name=pcd]:checked')||{}).value||'',
+    tiposDeficiencia:  checked(['def1','def2','def3','def4','def5','def6','def7','def8']),
+    linkedin:          document.getElementById('linkedin').value,
+    whatsapp:          document.getElementById('whats').value,
+    nivelEducacional:  (document.querySelector('input[name=edu]:checked')||{}).value||'',
+    transicaoCarreira: (document.querySelector('input[name=trans]:checked')||{}).value||'',
+    areasAtuacao:      checked(['a1','a2','a3','a4','a5','a6','a7','a8','a9','a10','a11','a12','a13']),
+    outraArea:         document.getElementById('outraArea').value,
+    areasTech:         checked(['tc1','tc2','tc3','tc4','tc5','tc6','tc7','tc8','tc9','tc10','tc11','tc12','tc13','tc14','tc15']),
+    outraAreaTech:     document.getElementById('outraTech').value,
+    nivelAtual:        (document.querySelector('input[name=nivel]:checked')||{}).value||'',
+    voluntario:        (document.querySelector('input[name=vol]:checked')||{}).value||'',
+    areasVoluntariado: checked(['vl1','vl2','vl3','vl4','vl5','vl6','vl7','vl8']),
+    nivelVagas:        checked(['vg1','vg2','vg3','vg4','vg5']),
+  };
+
+  const btn=document.getElementById('sbtn');
+  btn.textContent='Enviando...'; btn.disabled=true;
+
+  try{
+    const res=await fetch(BACKEND+'/submit',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    const data=await res.json();
+    if(!res.ok) throw new Error(data.error||'Erro '+res.status);
+    document.getElementById('prog').style.width='100%';
+    document.getElementById('form').style.display='none';
+    document.getElementById('ok').classList.add('on');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(err){
+    toast('Erro ao enviar: '+err.message);
+    btn.textContent='☕ Enviar mapeamento'; btn.disabled=false;
+  }
+}
+</script>
+</body>
+</html>
